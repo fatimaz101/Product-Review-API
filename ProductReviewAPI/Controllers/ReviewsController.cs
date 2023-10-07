@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductReviewAPI.Data;
+using ProductReviewAPI.DTOs;
 using ProductReviewAPI.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,36 +19,53 @@ namespace ProductReviewAPI.Controllers
         {
             _context = context;
         }
-        // GET: api/<ReviewsController>
+        // GET: api/Reviews
         [HttpGet]
         public IActionResult Get()
         {
-           
 
-            var reviews = _context.Reviews.Include(r=>r.Product).ToList();
+
+            var reviews = _context.Reviews.Include(r => r.Product).ToList();
 
             return StatusCode(200, reviews);
                
             
         }
 
-        // GET api/<ReviewsController>/5
+        // GET api/Reviews
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var review = _context.Reviews.Include( r=> r.Product).Where(r => r.Id == id).FirstOrDefault();
+            var review = _context.Reviews.Include(r => r.Product).FirstOrDefault(r => r.Id == id);
 
 
-            if (review != null)
-            {
-
-                return StatusCode(200, review);
-            }
-            else
-            {
-                return NotFound();
-            }
+                return Ok( review);
+          
         }
+
+
+
+        //GET api/Reviews/search/product/{productId}
+        [HttpGet("search/product/{id}")]
+        public IActionResult SearchByProductId(int id)
+        {
+            // Perform search logic based on the provided keyword
+            // Return search results
+            var reviewsList = _context.Reviews.Include(r => r.Product).Where(r => r.ProductId == id).ToList();
+
+
+            return StatusCode(200 , reviewsList);
+
+
+        }
+
+
+
+
+
+
+
+
 
         // POST api/<ReviewsController>
         [HttpPost]
@@ -58,12 +76,35 @@ namespace ProductReviewAPI.Controllers
             //    _context.Reviews.Include(r=> r.Pro)
 
             //var product = _context.Products.Where(p => p.Id == review.ProductId).FirstOrDefault();
-            //review.Product = product;
+            //review.Product = roduct;
+
+            //if (review.ProductId != null) 
+            //{
+            //    var productReview = new ReviewDTO
+            //    {
+
+            //        Text = review.Text,
+            //        Rating = review.Rating,
+            //        ProductId = review.ProductId,
+
+            //        Product = _context.Products.Find(review.ProductId);
 
 
-            _context.Add(review);
-            _context.SaveChanges();
-            return StatusCode(201, review);
+
+
+            //}else
+            //{
+            //    return NotFound();
+            //}
+
+
+
+
+
+            //    _context.Reviews.Add(productReview);
+            //    _context.SaveChanges();
+            //    return StatusCode(201, productReview);
+            return null; 
         }
 
         // PUT api/<ReviewsController>/5
