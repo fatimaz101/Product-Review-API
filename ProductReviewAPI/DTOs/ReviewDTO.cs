@@ -5,7 +5,7 @@ namespace ProductReviewAPI.DTOs
     public class ReviewDTO
     {
         [Key]
-        public int Id { get; set; }
+      //Took out Id Property to not have it show up in query
         public string Text { get; set; }
         public int Rating { get; set; }
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProductReviewAPI.Data;
 using ProductReviewAPI.DTOs;
 using ProductReviewAPI.Models;
@@ -40,7 +41,23 @@ namespace ProductReviewAPI.Controllers
         {
             var product = _context.Products.Where(p => p.Id == id).FirstOrDefault();
 
-            return StatusCode(200, product);
+            var productDTO = new ProductDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Reviews = _context.Reviews.Include(r => r.Product).Where(r => r.ProductId == id).Select(r => new ReviewDTO
+                {
+                    Text = r.Text,
+                    Rating = r.Rating
+                }).ToList()
+               
+
+        };
+            productDTO.AverageRating =  productDTO.Reviews.Average(r => r.Rating);
+
+
+            return StatusCode(200, productDTO);
         }
 
         // POST api/<ProductsController>
