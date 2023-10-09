@@ -72,39 +72,39 @@ namespace ProductReviewAPI.Controllers
         public IActionResult Post([FromBody] Review review)
 
         {
-            //var product = 
-            //    _context.Reviews.Include(r=> r.Pro)
 
-            //var product = _context.Products.Where(p => p.Id == review.ProductId).FirstOrDefault();
-            //review.Product = roduct;
+            try
+            {
 
-            //if (review.ProductId != null) 
-            //{
-            //    var productReview = new ReviewDTO
-            //    {
+                var newReview = new Review
+                {
+                    Id = review.Id,
+                    Text = review.Text,
+                    Rating = review.Rating,
+                    ProductId = review.ProductId,
+                    Product = _context.Products.Where(p => p.Id == review.ProductId).FirstOrDefault(),
+                    
+                };
 
-            //        Text = review.Text,
-            //        Rating = review.Rating,
-            //        ProductId = review.ProductId,
+               
 
-            //        Product = _context.Products.Find(review.ProductId);
-
-
-
-
-            //}else
-            //{
-            //    return NotFound();
-            //}
+               
+                _context.Reviews.Add(newReview);
+                _context.SaveChanges();
+                return StatusCode(201, newReview);
 
 
+            }
+            catch
+            {
+                return Ok(NotFound());
+            }
 
 
 
-            //    _context.Reviews.Add(productReview);
-            //    _context.SaveChanges();
-            //    return StatusCode(201, productReview);
-            return null; 
+
+         
+            
         }
 
         // PUT api/<ReviewsController>/5

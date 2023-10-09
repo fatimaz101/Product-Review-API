@@ -23,9 +23,13 @@ namespace ProductReviewAPI.Controllers
 
         // GET: api/<ProductsController>
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] int? maxprice)
         {
             var products = _context.Products.ToList();
+            if(maxprice != null)
+            {
+                products = _context.Products.Where(p => p.Price <= maxprice).ToList();
+            }
            
             return Ok(products);
         }
@@ -34,7 +38,9 @@ namespace ProductReviewAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            return null;
+            var product = _context.Products.Where(p => p.Id == id).FirstOrDefault();
+
+            return StatusCode(200, product);
         }
 
         // POST api/<ProductsController>
